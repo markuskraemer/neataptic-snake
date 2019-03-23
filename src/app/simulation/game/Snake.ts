@@ -43,9 +43,7 @@ export class Snake {
         const newPos:XY = this.moveHead ();
         if(this.headIsOnMap (newPos)){
             
-            if(Alias.configService.snakeEats){
-                this.checkEat (newPos);
-            }
+            this.checkEat (newPos);
 
             this.updateBodyParts (newPos);
 
@@ -84,7 +82,7 @@ export class Snake {
     }
 
     private checkEat (headPos:XY):void {
-        if(headPos.equals(this.game.foodPos)){
+        if(Alias.configService.snakeEats && headPos.equals(this.game.foodPos)){
             this.hasEaten = true;
             this.game.eatFood ();
             this.noFoodTicks = 0;

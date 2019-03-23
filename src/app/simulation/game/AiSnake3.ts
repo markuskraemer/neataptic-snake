@@ -1,3 +1,5 @@
+import { MathUtils } from './../utils/MathUtils';
+import { Alias } from './../Alias';
 import { Direction } from './../model/Direction.enum';
 import { XY } from './../model/XY';
 import { Snake } from './Snake';
@@ -68,6 +70,11 @@ export class AiSnake3 extends Snake {
         const distFoodVertical = input[5];
         let score:number = 1;
         
+        if(!Alias.configService.snakeEats){
+            return score;
+        }
+
+
         if(distFoodHorizontal < 0){
             if(this.direction == Direction.Left){
                 score ++;
@@ -109,7 +116,7 @@ export class AiSnake3 extends Snake {
         }
 
         if(this.hasEaten){
-            score += 60;
+            score += 10;
         }
 
         return score;
@@ -123,19 +130,59 @@ export class AiSnake3 extends Snake {
         let input:number[];
 
         const distHeadBorderLeft:number = -headPos.x;
-        const distHeadBorderRight:number = this.game.width - headPos.x;
+        const distHeadBorderRight:number = this.game.width - headPos.x - 1;
         const distHeadBorderTop:number = -headPos.y;
-        const distHeadBorderBottom:number = this.game.height - headPos.y;
+        const distHeadBorderBottom:number = this.game.height - headPos.y - 1;
         const distFoodHorizontal:number = foodPos.x - headPos.x;
         const distFoodVertical:number = foodPos.y - headPos.y;
 
-        input = [distHeadBorderLeft, distHeadBorderTop, distHeadBorderRight, distHeadBorderBottom];
-        input = input.concat (distFoodHorizontal, distFoodVertical);
+        switch(this.direction) {
+            case Direction.Up:
+                input = [distHeadBorderLeft, distHeadBorderTop, distHeadBorderRight];
+                if(Alias.configService.snakeEats){
+                    input.push (distFoodHorizontal, distFoodVertical);
+                }else{
+                    input.push (0, 0);                    
+                }
+                break;
+
+            case Direction.Left:
+                input = [-distHeadBorderBottom, distHeadBorderLeft, -distHeadBorderTop];                    
+                if(Alias.configService.snakeEats){
+                    input.push (-distFoodVertical, distFoodHorizontal);
+                }else{
+                    input.push (0, 0);                    
+                }
+
+                break;
+
+            case Direction.Down:
+                input = [-distHeadBorderRight, -distHeadBorderBottom, -distHeadBorderLeft];                    
+                if(Alias.configService.snakeEats){
+                    input.push (-distFoodHorizontal, -distFoodVertical);
+                }else{
+                    input.push (0, 0);                    
+                }
+                break;
+
+            case Direction.Right:
+                input = [distHeadBorderTop, -distHeadBorderRight, distHeadBorderBottom];                    
+                if(Alias.configService.snakeEats){
+                    input.push (distFoodVertical, -distFoodHorizontal);
+                }else{
+                    input.push (0, 0);                    
+                }
+
+                break;
+        }
 
         /*
         console.log(' head ' + headPos.y + ' fv: ' + distFoodVertical + ' score: ' + this.brain.score 
                 + ' dir: ' + this.direction + ' noFoodTicks: ' + this.noFoodTicks);
         */
+
+        input.forEach(i => MathUtils.sigmoid(i));
+
         return input;
     }
 }
