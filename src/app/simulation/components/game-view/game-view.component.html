@@ -1,0 +1,12 @@
+<div [class.isDead]="game.snake.isDead">
+    <div class="info">score:{{game.snake.brain.score}}</div>
+    <game-bg [width]="game.width" 
+            [height]="game.height" 
+            [tileSize]="configService.tileSize"></game-bg>
+    <game-fg [width]="game.width" 
+            [height]="game.height" 
+            [tileSize]="configService.tileSize"
+            [foodPos]="game.foodPos"
+            [snake]="game.snake"
+            ></game-fg>
+</div>

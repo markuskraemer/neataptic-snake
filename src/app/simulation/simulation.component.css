@@ -1,0 +1,14 @@
+:host {
+    display: block;    
+}
+
+game-view {
+    position: relative;
+    margin:10px;
+}
+
+.game-container {
+
+}
+
+
