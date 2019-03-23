@@ -9,18 +9,18 @@ export class TickService {
     private _ticks:number = 0;
     private intervalId:any;
     private _isRunning:boolean;
-    private _speed:number = 60;
+    private _fps:number = 60;
     public loopsPerTick:number = 1;
     public tick:EventEmitter<number> = new EventEmitter ();
     public draw:EventEmitter<null> = new EventEmitter ();
 
-    public get speed ():number {
-        return this._speed;
+    public get fps ():number {
+        return this._fps;
     }
 
-    public set speed (value:number) {
-        if(this._speed != value && value > 0){
-            this._speed = value;
+    public set fps (value:number) {
+        if(this._fps != value && value > 0){
+            this._fps = value;
             this.start ();
         }
     }    
@@ -34,14 +34,14 @@ export class TickService {
     }
 
     public get updateTime ():number {
-        return 1000 / this._speed;
+        return 1000 / this._fps;
     }
 
     constructor(
         private configService:ConfigService
     ) {
         Alias.tickService = this;
-        this._speed = configService.fps;
+        this._fps = configService.fps;
        // this.start ();
      }
 

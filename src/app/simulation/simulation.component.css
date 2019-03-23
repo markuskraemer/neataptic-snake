@@ -1,5 +1,16 @@
 :host {
-    display: block;    
+    display: flex;    
+
+
+}
+
+.left-side {
+    width:200px;
+    background:lightgray;
+    padding:20px;
+}
+
+.right-side {
 }
 
 game-view {

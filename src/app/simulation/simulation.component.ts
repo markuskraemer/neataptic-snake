@@ -143,10 +143,10 @@ export class SimulationComponent {
             this._useFastMode = value;
 
             if(this._useFastMode){
-                this.tickService.speed = 40;
+                this.tickService.fps = 40;
                 this.tickService.loopsPerTick = 100;
             }else{
-                this.tickService.speed = 15;
+                this.tickService.fps = 15;
                 this.tickService.loopsPerTick = 1;                
             }
         }

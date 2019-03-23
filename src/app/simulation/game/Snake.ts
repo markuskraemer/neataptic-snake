@@ -42,12 +42,18 @@ export class Snake {
         ++this.ticks;
         const newPos:XY = this.moveHead ();
         if(this.headIsOnMap (newPos)){
-            this.checkEat (newPos);
+            
+            if(Alias.configService.snakeEats){
+                this.checkEat (newPos);
+            }
+
             this.updateBodyParts (newPos);
 
-            if(this.findIndexInBody (this.bodyParts[0]) > 0){
-                this.isDead = true;
-                this.game.snakeDead ();                
+            if(Alias.configService.snakeDiesOnHittingItself){
+                if(this.findIndexInBody (this.bodyParts[0]) > 0){
+                    this.isDead = true;
+                    this.game.snakeDead ();                
+                }
             }
         }else{
             this.isDead = true;
