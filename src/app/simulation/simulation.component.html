@@ -3,6 +3,7 @@
         [value]="tickService.isRunning?'stop':'start'" 
         (click)="tickService.isRunning?tickService.stop():tickService.start()">
     <div>FPS: <input [(ngModel)]="tickService.fps"></div>
+    <div>MutaionRate: <input [(ngModel)]="configService.mutationRate"></div>
     <div>Snake Eats: <input type="checkbox" [(ngModel)]="configService.snakeEats"></div>
     <div>Snake Dies On Hittin Itself<input type="checkbox" [(ngModel)]="configService.snakeDiesOnHittingItself"></div>
 </div>

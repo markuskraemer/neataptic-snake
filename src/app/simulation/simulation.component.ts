@@ -1,4 +1,4 @@
-import { AiSnake3 } from './game/AiSnake3';
+import { AiSnake3_2 } from './game/AiSnake3_2';
 import { KeyboardService } from './game/Keyboard.service';
 import { PlayerSnake } from './game/PlayerSnake';
 import { Snake } from './game/Snake';
@@ -36,7 +36,7 @@ export class SimulationComponent {
     private initNeat () {
 
         const inputs = 5;
-        const outputs = 4;
+        const outputs = 3;
         const hidden = inputs + outputs + 2;        
         
         this._neat = new Neat (
@@ -62,7 +62,7 @@ export class SimulationComponent {
     private startEvaluation() {
         //console.log('startEvalution: ', this._neat.population);
         for(let i = 0; i < this._neat.population.length; ++i) {
-            let snake = new AiSnake3 (this._neat.population[i]);
+            let snake = new AiSnake3_2 (this._neat.population[i]);
             this.games[i].start (snake);
         }
 
@@ -100,8 +100,8 @@ export class SimulationComponent {
         }
 
         const inputs = 5;
-        const outputs = 4;
-        const hidden = inputs + outputs + 2;        
+        const outputs = 3;
+        const hidden = inputs + outputs + 4;        
 
         for(var i = 0; i < this._neat.popsize; i++){
             if(i < this._neat.popsize * Alias.configService.elitismPercent){
