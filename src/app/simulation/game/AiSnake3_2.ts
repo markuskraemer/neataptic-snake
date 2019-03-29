@@ -8,6 +8,9 @@ import { getHottestIndex } from './../utils/Utils';
 
 export class AiSnake3_2 extends Snake {
 
+    public static readonly INPUT_COUNT:number = 5;
+    public static readonly OUTPUT_COUNT:number = 3;
+
     constructor (public brain:Network){
         
         super ();

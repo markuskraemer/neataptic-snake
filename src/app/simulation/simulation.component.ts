@@ -19,6 +19,7 @@ export class SimulationComponent {
     private _neat:Neat;
     private _useFastMode:boolean;
     private _tickSub:any;
+    private _snakeClazz = AiSnake3_2;
 
     public games:Game[] = [];
 
@@ -33,15 +34,10 @@ export class SimulationComponent {
         this.startEvaluation ();
     }
 
-    private initNeat () {
-
-        const inputs = 5;
-        const outputs = 3;
-        const hidden = inputs + outputs + 2;        
-        
+    private initNeat () {        
         this._neat = new Neat (
-            inputs, 
-            outputs, 
+            this._snakeClazz.INPUT_COUNT, 
+            this._snakeClazz.OUTPUT_COUNT, 
             (network) => { 
                 return network.score; 
             },
@@ -51,9 +47,9 @@ export class SimulationComponent {
                 mutationRate: Alias.configService.mutationRate,
                 elitism: Math.round(Alias.configService.elitismPercent * Alias.configService.gamesPerGeneration),
                 network: new architect.Random (
-                    inputs,
-                    hidden,
-                    outputs
+                    this._snakeClazz.INPUT_COUNT,
+                    this._snakeClazz.INPUT_COUNT + this._snakeClazz.OUTPUT_COUNT + 2,
+                    this._snakeClazz.OUTPUT_COUNT,
                 )
             }
         )
@@ -62,7 +58,7 @@ export class SimulationComponent {
     private startEvaluation() {
         //console.log('startEvalution: ', this._neat.population);
         for(let i = 0; i < this._neat.population.length; ++i) {
-            let snake = new AiSnake3_2 (this._neat.population[i]);
+            let snake = new this._snakeClazz (this._neat.population[i]);
             this.games[i].start (snake);
         }
 
@@ -99,10 +95,6 @@ export class SimulationComponent {
            // console.log(' ' + n.score);
         }
 
-        const inputs = 5;
-        const outputs = 3;
-        const hidden = inputs + outputs + 4;        
-
         for(var i = 0; i < this._neat.popsize; i++){
             if(i < this._neat.popsize * Alias.configService.elitismPercent){
                 newPopulation.push(this._neat.population[i]);            
@@ -110,9 +102,9 @@ export class SimulationComponent {
                 newPopulation.push(this._neat.getOffspring());
             }else{
                 newPopulation.push(new architect.Random (
-                    inputs,
-                    hidden,
-                    outputs
+                    this._snakeClazz.INPUT_COUNT, 
+                    this._snakeClazz.INPUT_COUNT + this._snakeClazz.OUTPUT_COUNT + 2, 
+                    this._snakeClazz.OUTPUT_COUNT, 
                 ))
             }
         }
