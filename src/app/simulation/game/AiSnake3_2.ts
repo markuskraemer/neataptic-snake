@@ -30,9 +30,18 @@ export class AiSnake3_2 extends Snake {
             this.brain.score /= 4;
             this.isDead = true;
             this.game.snakeDead ();                
+        }else if(this.bodyParts.length > (this.game.width * this.game.height) / 3){
+            console.log('tooo long: ' + this.bodyParts.length);
+            this.isDead = true;
+            this.game.snakeDead (); 
         }else{
             this.brain.score += score;
         }
+        /*
+        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+        this.calcInput ();
+        console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+        */
 
     }
 
@@ -91,8 +100,25 @@ export class AiSnake3_2 extends Snake {
         return score;
     }
 
+    private isLeftFree () {
+        const headPos:XY = this.bodyParts[0];
+        return (headPos.x > 0);        
+    }
 
-    
+    private isTopFree () {
+        const headPos:XY = this.bodyParts[0];
+        return (headPos.y > 0);        
+    }
+
+    private isRightFree () {
+        const headPos:XY = this.bodyParts[0];
+        return (headPos.x < this.game.width - 2);        
+    }
+
+    private isBottomFree () {
+        const headPos:XY = this.bodyParts[0];
+        return (headPos.y < this.game.height - 2);        
+    }
 
 
     private calcInput ():number[] {
@@ -100,16 +126,35 @@ export class AiSnake3_2 extends Snake {
         const foodPos:XY = this.game.foodPos;
         let input:number[];
 
-        const leftFree:number = (headPos.x > 1) ? 1 : 0;
-        const rightFree:number = (headPos.x < this.game.width - 2) ? 1 : 0;
-        const topFree:number = (headPos.y > 1) ? 1 : 0;
-        const bottomFree:number = (headPos.y < this.game.height - 2) ? 1 : 0;
         const distFoodHorizontal:number = foodPos.x - headPos.x;
         const distFoodVertical:number = foodPos.y - headPos.y;
 
+        let leftFree    = this.isLeftFree ();
+        let rightFree   = this.isRightFree ();
+        let topFree     = this.isTopFree ();
+        let bottomFree  = this.isBottomFree ();
+
+        if(Alias.configService.snakeDiesOnHittingItself){
+            const leftInBody = this.snakeBodyContainsPos ({x: headPos.x - 1, y: headPos.y});
+            const topInBody = this.snakeBodyContainsPos ({x: headPos.x, y: headPos.y - 1});
+            const rightInBody = this.snakeBodyContainsPos ({x: headPos.x + 1, y: headPos.y});
+            const bottomInBody = this.snakeBodyContainsPos ({x: headPos.x, y: headPos.y - 1});
+        
+            leftFree = leftFree && !leftInBody;
+            topFree = topFree && !topInBody;
+            rightFree = rightFree && !rightInBody;
+            bottomFree = bottomFree && !bottomInBody;
+        }
+
+        const leftFreeNum = Number (leftFree);
+        const topFreeNum = Number (topFree);
+        const rightFreeNum = Number (rightFree);
+        const bottomFreeNum = Number (rightFree);
+
+
         switch(this.direction) {
             case Direction.Up:
-                input = [leftFree, topFree, rightFree];
+                input = [leftFreeNum, topFreeNum, rightFreeNum];
                 if(Alias.configService.snakeEats){
                     input.push (distFoodHorizontal, distFoodVertical);
                 }else{
@@ -118,7 +163,7 @@ export class AiSnake3_2 extends Snake {
                 break;
 
             case Direction.Left:
-                input = [bottomFree, leftFree, topFree];                    
+                input = [bottomFreeNum, leftFreeNum, topFreeNum];                    
                 if(Alias.configService.snakeEats){
                     input.push (-distFoodVertical, distFoodHorizontal);
                 }else{
@@ -128,7 +173,7 @@ export class AiSnake3_2 extends Snake {
                 break;
 
             case Direction.Down:
-                input = [rightFree, bottomFree, leftFree];                    
+                input = [rightFreeNum, bottomFreeNum, leftFreeNum];                    
                 if(Alias.configService.snakeEats){
                     input.push (-distFoodHorizontal, -distFoodVertical);
                 }else{
@@ -137,7 +182,7 @@ export class AiSnake3_2 extends Snake {
                 break;
 
             case Direction.Right:
-                input = [topFree, rightFree, bottomFree];                    
+                input = [topFreeNum, rightFreeNum, bottomFreeNum];                    
                 if(Alias.configService.snakeEats){
                     input.push (distFoodVertical, -distFoodHorizontal);
                 }else{
@@ -152,8 +197,7 @@ export class AiSnake3_2 extends Snake {
                 + ' dir: ' + this.direction + ' noFoodTicks: ' + this.noFoodTicks);
         */
 
-        input.forEach(i => MathUtils.sigmoid(i));
-
+        input = input.map(i => MathUtils.sigmoid(i));
         return input;
     }
 }

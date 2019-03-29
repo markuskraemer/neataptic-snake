@@ -6,15 +6,15 @@ export class ConfigService {
     constructor (){
         Alias.configService = this;
     }
-    public readonly gamesPerGeneration:number = 24;
+    public readonly gamesPerGeneration:number = 20;
     public elitismPercent:number = .25;
     public offspringPercent:number = .5;
     public mutationRate:number = .4;
     public readonly autoRunNextgeneration:boolean = true;
 
-    public width:number = 20;
-    public height:number = 20;
-    public readonly tileSize:number = 6;
+    public width:number = 15;
+    public height:number = 15;
+    public readonly tileSize:number = 10;
     public readonly fps:number = 30;
     public readonly snakeStartLength:number = 3;
 

@@ -48,7 +48,7 @@ export class Snake {
             this.updateBodyParts (newPos);
 
             if(Alias.configService.snakeDiesOnHittingItself){
-                if(this.findIndexInBody (this.bodyParts[0]) > 0){
+                if(this.snakeBodyContainsPos (this.bodyParts[0])){
                     this.isDead = true;
                     this.game.snakeDead ();                
                 }
@@ -66,13 +66,10 @@ export class Snake {
         return true;
     }
 
-    public findIndexInBody (pos:XY):number {
-
-        for(let i:number = 1; i < this.bodyParts.length; ++i){
-            if(this.bodyParts[i].equals(pos))
-                return i;
-        }
-        return -1;
+    public snakeBodyContainsPos (pos:{x:number, y:number}):boolean {
+        return this.bodyParts.find ((value:XY, index:number) => {
+            return index > 0 && value.x == pos.x && value.y == pos.y;
+        }) != null;
     }
 
     public snakeContainsPos (pos:XY):boolean {
